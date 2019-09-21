@@ -1,17 +1,29 @@
 package com.monkey01.springbootstart.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.monkey01.springbootstart.controller.STS.Sts;
+import com.monkey01.springbootstart.controller.VOD.Vod;
 
-/**
- * Created by feiweiwei on 17/7/31.
- */
+
 //@RestController注解能够使项目支持Rest
 @RestController
 @SpringBootApplication
 //表示该controller类下所有的方法都公用的一级上下文根
-@RequestMapping(value = "/springboot")
+@RequestMapping(value = "/AliServer")
+
 public class UserController {
+	@Autowired
+    private Vod nVod;
+	
+	@Autowired
+    private Sts nSts;
+	
     //这里使用@RequestMapping注解表示该方法对应的二级上下文路径
     @RequestMapping(value = "/getUserByGet", method = RequestMethod.GET)
     String getUserByGet(@RequestParam(value = "userName") String userName){
@@ -29,5 +41,33 @@ public class UserController {
     @RequestMapping(value = "/getUserByJson",method = RequestMethod.POST)
     String getUserByJson(@RequestBody String data){
         return "Json is " + data;
+    }
+    
+    @RequestMapping(value = "/getSTS", method = RequestMethod.GET)
+    String getStsByGet() throws JsonProcessingException {
+    	
+    	return nSts.getSts();
+    }
+    @RequestMapping(value = "/getPlayAuth", method = RequestMethod.GET)
+    String getPlayAuthByGet(@RequestParam(value = "Vid") String Vid) throws JsonProcessingException {
+    	
+    	return nVod.getPlayAuth(Vid);
+    }
+    @RequestMapping(value = "/getPlayURL", method = RequestMethod.GET)
+    String getgetPlayUrlByGet(@RequestParam(value = "Vid") String Vid) throws JsonProcessingException {
+    	
+    	return nVod.getPlayURL(Vid);
+    } 
+    @RequestMapping(value = "/getUpLoadAuth", method = RequestMethod.GET)
+    String getUpLoadAuthByGet() throws JsonProcessingException {
+    	
+    	Sts nSts = new Sts();
+    	return nSts.getSts();
+    }
+    @RequestMapping(value = "/getVodCallBack",method = RequestMethod.POST)
+    String getVodCallBackByJson(@RequestBody String data) throws UnsupportedEncodingException{
+    	String keyWord = URLDecoder.decode(data, "GBK");
+    	System.out.print(keyWord+"\n");
+        return "Json is " + keyWord;
     }
 }
